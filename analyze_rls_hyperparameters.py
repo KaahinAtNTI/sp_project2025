@@ -72,7 +72,6 @@ def analyze_rls_hyperparameters(
         )
 
     df = pd.DataFrame(rows)
-    df.to_csv(os.path.join(save_dir, "rls_hyperparameters.csv"), index=False)
 
     df_eq = df[df["sweep"] == "N_equals_M"].sort_values("N")
     df_fix = df[df["sweep"] == "M_fixed_sweep_N"].sort_values("N")

@@ -15,7 +15,7 @@ from adam_lms import run_experiment
 
 
 def generate_q_table(
-    output_dir="results/adam/q_table",
+    output_dir="results/adam_lms/q_table",
     basename="q_table_adam",
     N=ADAM_N,
     M=ADAM_M,

@@ -49,7 +49,6 @@ def analyze_adam_hyperparameters(
         )
 
     df = pd.DataFrame(rows)
-    df.to_csv(os.path.join(save_dir, "adam_lms_hyperparameters.csv"), index=False)
 
     plt.figure(figsize=(9, 6))
     plt.plot(df["alpha"], df["Avg_Q1"], "o-", label="Avg Q1")
