@@ -25,11 +25,8 @@ def plot_rls_reconstructions(patients=(2, 4), save_dir="results/rls/reconstructi
 
     for patient_no in patients:
         data = load_patient_data(patient_no)
-        res = run_experiment(patient_no, N=RLS_N, M=RLS_M, lam=RLS_LAMBDA)
-        if data is None or res is None:
-            continue
+        _, _, d_true_test, d_est_test = run_experiment(patient_no, N=RLS_N, M=RLS_M, lam=RLS_LAMBDA)
 
-        _, _, d_true_test, d_est_test = res
         d_train = data["d_train"]
         fs = data["fs"]
 
@@ -48,17 +45,27 @@ def plot_rls_reconstructions(patients=(2, 4), save_dir="results/rls/reconstructi
         test_start = max(split_idx, start_idx)
         test_end = min(split_idx + len(d_est_test), end_idx)
         t_test = np.arange(test_start, test_end) / fs
-        y_est = d_est_test[(test_start - split_idx) : (test_end - split_idx)]
+        y_est = d_est_test[(test_start - split_idx):(test_end - split_idx)]
 
         path = os.path.join(save_dir, f"recon_rls_patient_{patient_no:02d}.png")
 
         plt.figure(figsize=(9, 6))
-        plt.plot(t, y_true, label="True signal")
-        plt.plot(t_test, y_est, label="RLS Reconstruction", linestyle="--")
-        
-        plt.axvline(split_t, color="gray", linestyle=":", label="Split point")
-        
-        plt.title(f"ECG Signal Reconstruction (Patient {patient_no}) - RLS")
+
+        plt.plot(t, y_true, label="ECG II (reference)", color="black")
+
+        plt.plot(t_test, y_est, "--", label="RLS reconstruction", color="tab:blue")
+
+        plt.axvline(split_t, color="gray", linestyle=":", label="Train/Test split")
+
+        plt.axvspan(
+            split_t,
+            t[-1],
+            color="gray",
+            alpha=0.15,
+            label="Missing segment (reconstructed)",
+        )
+
+        plt.title(f"ECG II Reconstruction using RLS (Patient {patient_no})")
         plt.xlabel("Time [s]")
         plt.ylabel("Voltage [mV]")
 

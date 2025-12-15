@@ -19,13 +19,10 @@ def plot_correlations(patients=(2, 4), lag_window=500, save_dir="results/correla
     Returns:
         None
     """
-    
     os.makedirs(save_dir, exist_ok=True)
 
     for patient_no in patients:
         data = load_patient_data(patient_no)
-        if data is None:
-            continue
 
         x1 = data["x1_train"]
         x2 = data["x2_train"]
@@ -48,9 +45,11 @@ def plot_correlations(patients=(2, 4), lag_window=500, save_dir="results/correla
         plt.plot(lags, corr_1_norm, label="Corr(V, II)")
         plt.plot(lags, corr_2_norm, label="Corr(AVR, II)", alpha=0.8)
 
+        plt.axvline(0, color="gray", linestyle=":", linewidth=1)
+
         plt.xlabel("Lag (samples)")
         plt.ylabel("Normalized correlation")
-        plt.title(f"Cross-correlation (Patient {patient_no})")
+        plt.title(f"Cross-correlation (Training Data) — Patient {patient_no}")
         plt.xlim(-lag_window, lag_window)
         plt.grid(alpha=0.3)
 

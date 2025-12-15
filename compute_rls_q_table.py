@@ -14,24 +14,34 @@ def generate_q_table(
     M=RLS_M,
     lam=RLS_LAMBDA,
 ):
-    """Run RLS for patients 1–8 and save Q1/Q2 results to CSV.
+    """Generate and save a Q1/Q2 table for patients 1–8 using RLS.
+
+    Args:
+        output_dir: Directory where the CSV file is saved.
+        basename: Base name of the output CSV file (without extension).
+        N: Number of past samples used from ECG V.
+        M: Number of past samples used from ECG AVR.
+        lam: RLS forgetting factor.
 
     Returns:
-        Pandas DataFrame with columns [Patient, Q1, Q2].
+        pandas.DataFrame with columns: Patient, Q1, Q2.
     """
     results = []
 
     for patient_no in range(1, 9):
-        try:
-            Q1, Q2, _, _ = run_experiment(
-                patient_no,
-                N,
-                M,
-                lam,
-            )
-            results.append({"Patient": patient_no, "Q1": Q1, "Q2": Q2})
-        except Exception:
-            results.append({"Patient": patient_no, "Q1": 0.0, "Q2": 0.0})
+        Q1, Q2, _, _ = run_experiment(
+            patient_no,
+            N,
+            M,
+            lam,
+        )
+        results.append(
+            {
+                "Patient": patient_no,
+                "Q1": Q1,
+                "Q2": Q2,
+            }
+        )
 
     df = pd.DataFrame(results)
     os.makedirs(output_dir, exist_ok=True)

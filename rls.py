@@ -3,13 +3,13 @@
 import numpy as np
 
 from ecg_loader import load_patient_data
-from config import RLS_LAMBDA, RLS_M, RLS_N
+from config import RLS_LAMBDA, RLS_M, RLS_N, RLS_DELTA
 
 
 class RLSFilter:
     """Recursive Least Squares filter with two inputs."""
 
-    def __init__(self, N=RLS_N, M=RLS_M, lam=RLS_LAMBDA, delta=100.0):
+    def __init__(self, N=RLS_N, M=RLS_M, lam=RLS_LAMBDA, delta=RLS_DELTA):
         """Initialize the RLS filter.
 
         Args:

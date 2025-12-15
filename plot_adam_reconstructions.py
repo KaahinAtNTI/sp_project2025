@@ -27,11 +27,10 @@ def plot_adam_reconstructions(
 
     for patient_no in patients:
         data = load_patient_data(patient_no)
-        res = run_experiment(patient_no, N=ADAM_N, M=ADAM_M, alpha=ADAM_ALPHA)
-        if data is None or res is None:
-            continue
+        Q1, Q2, d_true_test, d_est_test = run_experiment(
+            patient_no, N=ADAM_N, M=ADAM_M, alpha=ADAM_ALPHA
+        )
 
-        _, _, d_true_test, d_est_test = res
         d_train = data["d_train"]
         fs = data["fs"]
 
@@ -55,12 +54,22 @@ def plot_adam_reconstructions(
         path = os.path.join(save_dir, f"recon_adam_lms_patient_{patient_no:02d}.png")
 
         plt.figure(figsize=(9, 6))
-        plt.plot(t, y_true, label="True signal")
-        plt.plot(t_test, y_est, label="Adam-LMS Reconstruction", linestyle="--")
 
-        plt.axvline(split_t, color="gray", linestyle=":", label="Split point")
+        plt.plot(t, y_true, label="ECG II (reference)", color="black")
 
-        plt.title(f"ECG Signal Reconstruction (Patient {patient_no}) - Adam-LMS")
+        plt.plot(t_test, y_est, "--", label="Adam-LMS reconstruction", color="tab:blue")
+
+        plt.axvline(split_t, color="gray", linestyle=":", label="Train/Test split")
+
+        plt.axvspan(
+            split_t,
+            t[-1],
+            color="gray",
+            alpha=0.15,
+            label="Missing segment (reconstructed)",
+        )
+
+        plt.title(f"ECG II Reconstruction using Adam-LMS (Patient {patient_no})")
         plt.xlabel("Time [s]")
         plt.ylabel("Voltage [mV]")
 
